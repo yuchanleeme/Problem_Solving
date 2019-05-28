@@ -13,14 +13,14 @@
 int main() {
 
   int n;
-  unsigned long long fibo[150] = {0, 1,};
+  long long fibo[100] = {0, 1,};
 
-  for (int i = 0; i < 145; i++) {
+  for (int i = 0; i < 97; i++) {
     fibo[i+2] = fibo[i] + fibo[i+1];
   }
 
   scanf("%d", &n);
-  printf("%llu\n",fibo[n]);
+  printf("%lli\n",fibo[n]);
 
   return 0;
 }
