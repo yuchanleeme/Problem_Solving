@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-//https://www.acmicpc.net/problem/
+//https://www.acmicpc.net/problem/1309
 
 /*
 <동물원>
