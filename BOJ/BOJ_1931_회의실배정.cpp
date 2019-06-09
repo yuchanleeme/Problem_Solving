@@ -1,95 +1,60 @@
 #include <iostream>
-#include <queue>
+#include <algorithm>
 using namespace std;
 //https://www.acmicpc.net/problem/11047
 
 /*
-<회의실 배정 >
+<회의실 배정> - 기존 코드 수정
 주요: 그리디 알고리즘을 활용한다.
-1. 끝나는 시간이 가장 빠른 회의를 고른다.
-2. 그 다음 들어갈 수 있는 회의 중에 끝나는 시간이 가장 빠른 회의를 고른다.
-3. 위의 과정을 반복 해서 더이상 조건에 해당하는 회의가 없을 때까지 고른다.
-4. 회의를 고를 때마다 count값을 더해서 출력한다.
+1. 끝나는 시간이 가장 빠른순으로 정렬한다.
+2. 끝나는 시간을 compare_value로 저장한다.
+3. 정렬된 구조체 배열을 compare_value와 조건에 맞춰 비교하면서 count를 해준다.
+  => 회의 시작 시간 compare_value보다 크거나 같은 경우 compare_value를 회의 끝나는 시간으로 지정하고 count 해준다.
+  => 이 이외의 경우는 패스해준다.
+4. 계산된 count값을 출력한다.
 
 */
+
 typedef struct Conf{
   int start;
   int end;
 }Conf;
 
+bool cmp(const Conf &c1, const Conf &c2){
+  if(c1.end < c2.end){
+    return true;
+  }
+  else if(c1.end == c2.end){
+    return c1.start < c2.start;
+  }
+  else{
+    return false;
+  }
+}
+
 int main() {
 
   int N, compare_value, temp, count = 0;
-  Conf conf;
-  queue<Conf> que;
-  bool is_exist_trigger;
-
+  Conf conf[100001];
   cin >> N;
 
   for (int i = 0; i < N; i++) {
-    cin >> conf.start >> conf.end;
-    que.push(conf);
+    cin >> conf[i].start >> conf[i].end;
   }
-  //큐가 빌 때까지
-  while(!que.empty()){
-    is_exist_trigger = false;
-    compare_value = que.front().end;
-    printf("compare_value : %d \n",compare_value);
-    printf("count : %d\n",count);
 
-    // 1번 조건
-    for (int i = 0; i < que.size(); i++) {
-      if (compare_value > que.front().end) {
-        compare_value = que.front().end;
-        printf("===== compare_value : %d\n",compare_value);
-      }
-      que.push(que.front());
-      que.pop();
-    }
+  sort(conf, conf+N, cmp);
 
-    temp = que.size();
-    for (int i = 0; i < temp; i++) {
-      if (compare_value > que.front().start) {
-        que.pop();
-        if(compare_value == que.front().end){
-          is_exist_trigger = true;
-        }
-      }
-      else if(compare_value == que.front().start){
-        if(compare_value == que.front().end){
-          que.pop();
-          count++;
-          printf("what %d\n",que.front().end);
-        }
-      }
-      else{
-        que.push(que.front());
-        que.pop();
+  compare_value = 0;
+  for (int i = 0; i < N; i++) {
+    if(conf[i].end >= compare_value){
+      if(conf[i].start >= compare_value){
+        compare_value = conf[i].end;
+        count++;
       }
     }
-    printf("<2>count : %d\n",count);
-    if (is_exist_trigger) {
-      count++;
-    }
-    printf("===================================\n");
   }
 
   cout << count;
 
-  // for (int i = 0; i < N; i++) {
-  //   cin << conf[i][0] << conf[i][1]; // 0 : 시작 , 1: 끝
-  // }
-  //
-  // compare_value = conf[j][1];
-  // while(true){
-  //   for (int j = 0; j < N; j++) {
-  //     if(conf[j][1] < compare_value){
-  //       compare_value = conf[j][1];
-  //     }
-  //   }
-  // }
-  //
-  //
-  // cout << "aaaaa"<< endl;
   return 0;
 }
