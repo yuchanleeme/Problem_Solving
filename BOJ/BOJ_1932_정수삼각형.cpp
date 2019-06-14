@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-//https://www.acmicpc.net/problem/1158
+//https://www.acmicpc.net/problem/1932
 
 /*
 <정수 삼각형>
@@ -41,7 +41,7 @@ int main() {
   for (int k = 0; k < n; k++) {
     res = max(res, dp[n-1][k]);
   }
-  
+
   cout << res;
 
   return 0;
