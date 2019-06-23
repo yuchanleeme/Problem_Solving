@@ -2,13 +2,6 @@
 using namespace std;
 //https://www.acmicpc.net/problem/1038
 
-/*
-<감소하는 수>
-주요: 가장 작은 생성자를 출력한다.
-1.
-
-*/
-
 int main() {
 
   int N, temp, first, next, count = 0;
@@ -27,7 +20,6 @@ int main() {
       flag = false;
     }
     else if(temp > 9876543210){
-      cout << "HEY"<<endl;
       break;
     }
     else{
