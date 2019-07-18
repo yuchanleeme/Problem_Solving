@@ -12,8 +12,11 @@ using namespace std;
 3. 탐색할때마다 count해준다.
 4. count 값을 출력한다.
 5. 전체 경우를 보는게 아니라 N, M 까지만 찾는다는것을 생각하자.
+==========
+* BFS 메모리초과 원인 : 큐에 삽입할 때 방문처리를 해야 중복 방지
 
 */
+
 int N, M, cnt = 0;
 int cal_x[4] = {-1, 0 ,1 , 0}, cal_y[4] = {0, -1, 0, 1};
 int maze[101][101] = {0, }, visit[101][101] = {0, };
@@ -28,9 +31,9 @@ void bfs(int x, int y){
     temp_y = y + cal_y[i];
 
     if(temp_x >= 0 && temp_x < N && temp_y >= 0 && temp_y < M){
-      if(maze[temp_x][temp_y] == 1 && visit[temp_x][temp_y] == 0){
+      if(visit[temp_x][temp_y] == 0 && maze[temp_x][temp_y] == 1){
         que.push(make_pair(temp_x, temp_y));
-        visit[x][y] = 1;
+        visit[temp_x][temp_y] = 1;
       }
     }
   }
@@ -38,7 +41,6 @@ void bfs(int x, int y){
 
 int main() {
 
-  freopen("1aa.txt","r",stdin);
   scanf("%d %d", &N, &M);
 
   for (int i = 0; i < N; i++) {
@@ -53,13 +55,12 @@ int main() {
   int temp_size;
   bool end_game = false;
   que.push(make_pair(0,0));
+  visit[0][0] = 1;
   while (!que.empty()) {
     temp_size = que.size();
     for (int i = 0; i < temp_size; i++) {
       bfs(que.front().first, que.front().second);
-      if(que.front().first + que.front().second == N + M -2){
-        end_game = true;
-      }
+      if(que.front().first + que.front().second == N + M - 2){ end_game = true;} // N, M까지 갔을 때
       que.pop();
     }
     cnt++;
