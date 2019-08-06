@@ -52,37 +52,34 @@ bool check_num(int x, int y, int num){
 
 void back_tracking(int num, int x, int y){
 
-  if(end_game){
+  if(end_game){ return;}
+
+  // 0을 다 찾은 경우
+  if(num == count){
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        cout << sudoku[i][j] << " ";
+      }
+      cout << endl;
+    }
+    end_game = true;
     return;
   }
   else{
-    // 0을 다 찾은 경우
-    if(num == count){
-      for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-          cout << sudoku[i][j] << " ";
-        }
-        cout << endl;
-      }
-      end_game = true;
-      return;
-    }
-    else{
-      for (int i = x; i < 9; i++) {
-        for (int j = y; j < 9; j++) {
-          if(sudoku[i][j] == 0){
-            for (int k = 1; k <= 9; k++) {
-              if(check_num(i, j, k)){
-                sudoku[i][j] = k;
-                back_tracking(num+1,i,j);
-                sudoku[i][j] = 0;
-              }
+    for (int i = x; i < 9; i++) {
+      for (int j = y; j < 9; j++) {
+        if(sudoku[i][j] == 0){
+          for (int k = 1; k <= 9; k++) {
+            if(check_num(i, j, k)){
+              sudoku[i][j] = k;
+              back_tracking(num+1, i, j);
+              sudoku[i][j] = 0;
             }
-            return; // 1~9 다찾았는데도 불가능한 경우
           }
+          return; // 1~9 다찾았는데도 불가능한 경우
         }
-        y = 0; // y값을 0으로 취해주어 2중 for문에서 x,y 다음으로 진행이 가능하다.
       }
+      y = 0; // y값을 0으로 취해주어 2중 for문에서 x,y 다음으로 진행이 가능하다.
     }
   }
 }
