@@ -1,92 +1,50 @@
 #include <iostream>
 #include <algorithm>
-#include <map>
 #include <vector>
 using namespace std;
 //https://www.acmicpc.net/problem/1339
 
 /*
+<단어수학>
+주요: 수학, 구현
+1. 한가지 식을 달리 생각해보자.
+  => ABC + BCA => (100A + 10B + C) + (100B + 10C + A) = 110B + 101A + 11C
+  => 즉, B A C 순으로 큰값을 넣어주면 해결이 된다.
+2. 알파벳 벡터를 미리 만들어준다. idx 는 input - 'A'
+3. 마지막으로 정렬 해주고 9 부터 차례대로 값을 곱해 계산해준다.
+
 =======
 * 백트래킹으로 풀었더니 시간초과가 났다.
+  => 좀더 효율적인 수학적인 접근을 이용했다.
 
 */
-int N, cnt = 0, max_value = 0;
-string input;
-vector<string> words;
-vector<int> visit, seq;
-vector<char> alp; // 각각의 알파벳 cnt개
-map<char, int> m;
 
-// 입력받은 라인 하나 알파벳에 맞게 계산하는 함수
-int cal_individual(int num){
-  int idx = 1;
-  int res = 0;
-
-  for (int i = words[num].size() - 1; i >= 0; i--) {
-    res += idx * m[words[num][i]];
-    idx *= 10;
-  }
-  return res;
-}
-
-// 모든 라인들을 더해서 계산하는 함수
-int cal_max(){
-
-  int ans = 0;
-
-  for (int i = 0; i < N; i++) {
-    ans += cal_individual(i);
-  }
-
-  return ans;
-}
-
-void back_tracking(int level){
-
-  if(level == cnt){
-    // 조합한 순열을 각 알파벳 값에 대응
-    for (int i = 0; i < cnt; i++) {
-      m[alp[i]] = seq[i];
-    }
-    // 최대값 계산
-    max_value = max(max_value, cal_max());
-    return;
-  }
-
-  // 백트래킹 구현
-  // 10 - cnt 이유 : 최대값 구하는 것이므로 그 아래값 필요가 없다.
-  for (int i = 10-cnt; i <= 9 ; i++) {
-    if(visit[i] == 0){
-      seq.push_back(i);
-      visit[i] = 1;
-      back_tracking(level + 1);
-      visit[i] = 0;
-      seq.pop_back();
-    }
-  }
+bool comp(const int& x, const int& y){
+  return x > y;
 }
 
 int main() {
 
+  int N, ans = 0;
+  string input;
   cin >> N;
-  visit = vector<int>(10,0);
-  
-  // 각 10으로 map 초기화, 서로 다른 알파벳 개수 : cnt
+  vector<int> alpa(26,0);
+
   for (int i = 0; i < N; i++) {
     cin >> input;
-    words.push_back(input);
-    for (int j = 0; j < words[i].size(); j++) {
-      if(m[words[i][j]] != 10){
-        alp.push_back(words[i][j]);
-        m[words[i][j]] = 10;
-        cnt++;
-      }
+    int mul = 1;
+    for (int j = input.length()-1; j>=0 ; j--) {
+      alpa[input[j] - 'A'] += mul;
+      mul *= 10;
     }
   }
+  sort(alpa.begin(),alpa.end(), comp);
 
-  back_tracking(0);
+  for (int i = 0; i <= 9; i++) {
+    ans += (9-i) * alpa[i];
+  }
 
-  cout << max_value;
+  cout << ans;
 
   return 0;
 }
