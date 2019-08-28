@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm>
+#include <stack>
 #include <vector>
 using namespace std;
 //https://www.acmicpc.net/problem/1753
@@ -16,6 +18,9 @@ int main() {
   cin >> V >> E >> K;
 
   vector<vector<int> > graph(V+1, vector<int>(V+1, 0));
+  vector<int> w(V+1, 11); // 가중치
+  vector<int> visit(V+1, 0);
+  w[K] = 0;
 
   for (int i = 0; i < E; i++) {
     cin >> x >> y >> z;
@@ -23,12 +28,36 @@ int main() {
       graph[x][y] = z;
     }
   }
+  stack<int> stk;
+  stk.push(K);
+  visit[K] = 1;
 
-  for (int p = 0; p < V+1; p++) {
-    for (int k = 0; k < V+1; k++) {
-      printf("%d ", graph[p][k]);
+  while(stk.size() != V){
+
+    for (int i = 1; i <= V; i++) {
+      if(graph[stk.top()][i] != 0){
+        w[i] = min(w[i], w[stk.top()] + graph[stk.top()][i]);
+      }
     }
-    printf("\n");
+    int temp_value = 11, idx;
+    for (int i = 1; i <= V; i++) {
+      if(visit[i] == 0){
+        if(temp_value > w[i]){
+          temp_value = w[i];
+          idx = i;
+        }
+      }
+    }
+    stk.push(idx);
+    visit[idx] = 1;
+  }
+  for (int i = 1; i <= V; i++) {
+    if(w[i] == 11){
+      printf("INF\n");
+    }
+    else{
+      printf("%d\n", w[i]);
+    }
   }
 
   return 0;
