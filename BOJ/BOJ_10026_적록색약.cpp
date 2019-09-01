@@ -7,67 +7,102 @@ using namespace std;
 /*
 <적록색약>
 주요: BFS, DFS
+1. 정상인이 보이는 그림과 적록색약인 사람이 보이는 그림을 구분해서 만든다.
+2. 각각의 판에 대해서 BFS, DFS로 탐색한다.
+3. 분리된 구역의 개수를 차례대로 출력한다.
 
 */
+
+// 그림의 좌표및 색깔
 typedef struct info{
 
   int x;
   int y;
   char color;
+
 }Info;
 
 int N, ans_A, ans_B;
 int t_x[4] = {-1, 0, 1, 0}, t_y[4] = {0, -1, 0, 1};
-vector<vector<char> > picture;
-vector<vector<int> > visit_a; // 정상인
-queue<Info> que_a;
-vector<vector<int> > visit_b; // 적록색약
-queue<Info> que_b;
+vector<vector<char> > picture_a; // 정상인 그림
+vector<vector<char> > picture_b; // 적록색약 그림
+vector<vector<int> > visit; // 방문
+queue<Info> que;
 
-void bfs(){
+// 2번
+void cal(vector<vector<char> > &picture){
 
-  while(!que_a.empty() && !que_b.empty()){
-
+  while(!que.empty()){
     for (int i = 0; i < 4; i++) {
-      int a_x = que_a.front().x + t_x[i];
-      int a_y = que_a.front().y + t_y[i];
+      int _x = que.front().x + t_x[i];
+      int _y = que.front().y + t_y[i];
 
-      if(a_x >= 0 && a_x < N && a_y >= 0 && a_y < N){
-        if(visit_a[a_x][a_y] == 0){
-          if(que_a.front().color == picture[a_x][a_y]){
-            visit_a[a_x][a_y] = 0;
-            Info info_t = {a_x, a_y, picture[a_x][a_y]};
-            que_a.push(info_t);
+      if(_x >= 0 && _x < N && _y >= 0 && _y < N){
+        if(visit[_x][_y] == 0){
+          if(que.front().color == picture[_x][_y]){
+            visit[_x][_y] = 1;
+            Info info_t = {_x, _y, picture[_x][_y]};
+            que.push(info_t);
           }
         }
       }
     }
-    printf("que.front() %d %d %c\n",que_a.front().x,que_a.front().y,que_a.front().color );
-    que_a.pop();
+    que.pop();
   }
-
-
 }
 
 int main() {
-  freopen("1aa.txt", "r", stdin);
+
   cin >> N;
 
-  picture = vector<vector<char> >(N, vector<char>(N,0));
-  visit_a = vector<vector<int> >(N, vector<int>(N,0));
-  visit_b = vector<vector<int> >(N, vector<int>(N,0));
+  picture_a = vector<vector<char> >(N, vector<char>(N,0));
+  picture_b = vector<vector<char> >(N, vector<char>(N,0));
+  visit = vector<vector<int> >(N, vector<int>(N,0));
 
+  // 1번
+  char temp_color;
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
-      cin >> picture[i][j];
+      cin >> temp_color;
+      if(temp_color == 'G'){
+        picture_b[i][j] = 'R';
+      }
+      else{
+        picture_b[i][j] = temp_color;
+      }
+      picture_a[i][j] = temp_color;
     }
   }
-  Info info_f = {0,0,picture[0][0]};
-  que_a.push(info_f);
-  visit_a[0][0] = 1;
-  que_b.push(info_f);
-  visit_b[0][0] = 1;
-  bfs();
+
+  // 정상인 그림
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      if(visit[i][j] == 0){
+        Info info_t = {i,j,picture_a[i][j]};
+        que.push(info_t);
+        visit[i][j] = 1;
+        cal(picture_a);
+        ans_A++;
+      }
+    }
+  }
+
+  // 적록색약 그림
+  visit = vector<vector<int> >(N, vector<int>(N,0)); // 방문벡터 초기화
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      if(visit[i][j] == 0){
+        Info info_t = {i,j,picture_b[i][j]};
+        que.push(info_t);
+        visit[i][j] = 1;
+        cal(picture_b);
+        ans_B++;
+      }
+    }
+  }
+
+  // 3번
+  cout << ans_A << " " << ans_B;
 
   return 0;
 }
