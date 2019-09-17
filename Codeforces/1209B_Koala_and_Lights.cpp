@@ -25,7 +25,11 @@ int main() {
     par[i].push_back(b);
   }
 
+<<<<<<< HEAD
   // max : 125 => 5 + Lcm(1,2,3,4,5)
+=======
+  // max : 125 => 5 + Lcd(1,2,3,4,5)
+>>>>>>> c5f331eb49a56d83253c1e81ded2fa48d105513b
   for (int i = 1; i <= 125; i++) {
     int res = 0;
     for (int j = 0; j < N; j++) {
