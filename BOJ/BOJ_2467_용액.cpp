@@ -6,7 +6,7 @@ using namespace std;
 //https://www.acmicpc.net/problem/2467
 
 /*
-<두 용액>
+<용액>
 주요: lower_bound, 이분 탐색
 1. 입력받은 용액값을 sort함수로 정렬한다.
 2. 정렬한 용액값들과 나머지 값들을 차례대로 비교를 해본다.
