@@ -15,7 +15,7 @@ using namespace std;
 3. 2,3으로 나눠질수 있다고 무조건 최솟값이 아니라는것을 알아야 한다.
 
 */
-
+const int MAX_VAL = 1000000;
 int dp[1000001] = {0,0,1,1,};
 int main() {
 
@@ -23,9 +23,9 @@ int main() {
   scanf("%d", &N);
   while (cnt < N+1) {
 
-    a = 1000000;
-    b = 1000000;
-    c = 1000000;
+    a = MAX_VAL;
+    b = MAX_VAL;
+    c = MAX_VAL;
 
     // 3으로 나눠 질 경우 a 에 저장
     if (cnt % 3 == 0) {
