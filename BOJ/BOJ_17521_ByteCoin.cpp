@@ -1,76 +1,56 @@
 #include <iostream>
-#include <vector>
-#include <queue>
 using namespace std;
 //https://www.acmicpc.net/problem/17521
 
 /*
 <Byte Coin>
-주요: BFS
+주요: 구현
+1. 쌀때 샀다가 비쌀때 팔면 된다.
+2. 내려가고 올라가는것을 switch화 해서 구현한다.
 ==========
 * 모든 경우의 수를 큐에 넣어서 계산하는 방법을 썼는데 계속 런타임 에러가 나왔다.
+* 그냥 단순 아이디어 구현이었다. DP도 아니고 그냥 구현
+* coin도 충분히 커질 수 있음에 유의한다.
 
 */
 
-typedef struct info{
-
-  long long day;
-  long long coin;
-  long long rest_price;
-
-}Info;
-
-int N, W;
-vector<int> price;
-
-queue<Info> que;
-
-long long bfs(){
-
-  long long res = 0;
-
-  que.push({0, 0, W});
-
-  while (!que.empty()) {
-
-    long long d = que.front().day;
-    long long c = que.front().coin;
-    long long p = que.front().rest_price;
-    que.pop();
-
-    if(d == N){
-      res = max(res, (long long)p);
-      que.pop();
-      continue;
-    }
-
-    // 매수
-    if(price[d] <= p){
-      long long extra_coin = p/price[d];
-      long long rest = p % price[d];
-      que.push({d+1, c+ extra_coin, rest});
-    }
-    // 매도
-    que.push({d+1, 0, p + (c*price[d])});
-
-    // 아무행동도 안했을 때
-    que.push({d+1, c, p});
-  }
-
-  return res;
-}
-
+long long N, W, coin, price[20];
 int main() {
 
   cin >> N >> W;
-
-  for (int i = 0; i < N; i++) {
-    int input;
-    cin >> input;
-    price.push_back(input);
+  for (int i = 1; i <= N; i++) {
+    cin >> price[i];
   }
 
-  cout << bfs();
+  // 처음은 내려가는 중이라 생각한다.
+  bool down = true;
+  bool up = false;
+
+  for (int i = 1; i <= N; i++) {
+
+    if(price[i+1] > price[i]){
+      // 내려가는 중인데 다음 값이 나보다 크다면 매수
+      if(down){
+        coin = W / price[i];
+        W = W % price[i];
+      }
+      up = true;
+      down = false;
+    }
+    else if(price[i+1] < price[i]){
+      // 올라가는 중인데 다음 값이 나보다 작다면 매도
+      if(up){
+        W += coin * price[i];
+        coin = 0;
+      }
+      up = false;
+      down = true;
+    }
+  }
+
+  // 마지막 남은 코인까지 판다.
+  W += coin * price[N];
+  cout << W;
 
   return 0;
 }
