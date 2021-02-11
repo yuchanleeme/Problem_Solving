@@ -1,11 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
-//
+//https://programmers.co.kr/learn/courses/30/lessons/17677
 
 /*
 <뉴스 클러스터링>
 주요: 투포인터
-1.
+1. 각 str1, str2를 temp1, temp2로 2알파벳씩 분류 한다.
+2. idx1, idx2 를 활용해 교집합의 개수를 찾는다.
+3. 최종 결과에 맞게 답을 리턴한다.
+==========
+* 26*26 조합을 아예 다 만들어서 하는 방법도 있다.
+
 */
 
 vector<string> temp1, temp2;
